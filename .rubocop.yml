@@ -1,0 +1,94 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  SuggestExtensions: false
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/seeds.rb'
+    - 'config/**'
+    - 'vendor/**'
+    - 'bin/**'
+    - 'node_modules/**'
+
+# Style configurations
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/AsciiComments:
+  Exclude:
+    - features/**/*
+
+Style/BlockDelimiters:
+  AllowedMethods: []
+
+Naming/AsciiIdentifiers:
+  Exclude:
+    - features/**/*
+
+Naming/PredicateName:
+  AllowedMethods:
+    - is_a?
+    - has_functionality?
+    - has_watermark
+
+# Metrics configurations
+Metrics/ClassLength:
+  Max: 200
+
+# Metrics and Style exceptions
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - 'app/**/*.rb'
+    - spec/**/*
+
+Metrics/BlockLength:
+  Enabled: false
+  AllowedMethods:
+    - describe
+    - context
+    - it
+
+Metrics/AbcSize:
+  Enabled: false
+
+# Layout configurations
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/LineLength:
+  Max: 130
+  AllowedPatterns:
+    - '^\s*describe\s.+\sdo$'
+    - '^\s*it\s.+\sdo$'
+    - '^\s*context\s.+\sdo$'
+    - "expect"
+
+# Lint configurations
+Lint/AmbiguousBlockAssociation:
+  AllowedMethods:
+    - not_change
+
+Lint/MissingSuper:
+  Enabled: false
