@@ -1,19 +1,20 @@
 default: &default
   adapter: mysql2
-  encoding: unicode
+  encoding: utf8mb4
   pool: <%= ENV.fetch("MAX_THREADS") { 5 } %>
   timeout: 5000
   host: <%= ENV.fetch("DATABASE_HOST", 'localhost') %>
-  port: 5432
-  username: <%= ENV.fetch("DATABASE_USER", 'postgres') %>
-  password: <%= ENV.fetch("DATABASE_PASSWORD", 'p0$tgR3$') %>
+  port: 3306
+  username: <%= ENV.fetch("DATABASE_USER", 'jesher') %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD", 'jesher') %>
 
 development:
   <<: *default
-  database: <%= ENV['DATABASE_NAME'] %>
+  database: <%= ENV.fetch("DATABASE_NAME", 'galgo') %>
 
 production:
   <<: *default
+  encoding: latin1
   host: <%= ENV['DATABASE_HOST'] %>
   database: <%= ENV['DATABASE_NAME'] %>
   username: <%= ENV['DATABASE_USER'] %>
