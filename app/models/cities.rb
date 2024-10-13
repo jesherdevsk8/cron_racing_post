@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class Dog < ActiveRecord::Base
+class City < ActiveRecord::Base
 end
