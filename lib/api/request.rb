@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require_relative 'service'
+require_relative 'exceptions'
 
-module Greyhoundbet
+module Api
   class Request
     attr_reader :path, :url, :data
 
@@ -21,15 +22,13 @@ module Greyhoundbet
       case path.to_sym
       when :meeting
         items = response&.dig(:list, :items)
-        raise Greyhoundbet::NoContent unless items
+        raise NoContent unless items
 
         items
-      when :cards
-        raise Greyhoundbet::NoContent unless response
+      when :card
+        raise NoContent unless response
 
         response
-      else
-        {}
       end
     end
   end

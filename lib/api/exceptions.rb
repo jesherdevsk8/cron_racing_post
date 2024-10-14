@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module NextRace
+module Api
   class Error < StandardError; end
-  class ApiRequestError < Error; end
+  class RequestError < Error; end
 
   class NoContent < Error
     def initialize(message = 'No content found')
