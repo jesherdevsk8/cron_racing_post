@@ -31,9 +31,11 @@ module Greyhoundbet
 
       racings = []
 
-      NextRacing.truncate_table
-      NextRacingDog.truncate_table
-      NextRacingTip.truncate_table
+      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 0;')
+      NextRacing.delete_all
+      NextRacingDog.delete_all
+      NextRacingTip.delete_all
+      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS = 1;')
 
       site = Site.find_or_create_by(site: Site::NAMES[:greyhoundbet],
         by_name: Site::NAMES[:greyhoundbet])
@@ -81,17 +83,6 @@ module Greyhoundbet
 
             statistic = StatisticByDog.find_or_initialize_by(dog_id: dog.id)
             statistic.top_speed = dog_data[:brt]
-            statistic.total_races ||= 0
-            statistic.races_without_position ||= 0
-            statistic.races_in_position_1 ||= 0
-            statistic.races_in_position_2 ||= 0
-            statistic.races_in_position_3 ||= 0
-            statistic.races_in_position_4 ||= 0
-            statistic.races_in_position_5 ||= 0
-            statistic.races_in_position_6 ||= 0
-            statistic.sum_time_to_avg ||= 0
-            statistic.sum_speed_to_avg ||= 0
-            statistic.sum_split_to_avg ||= 0
 
             statistic.save!
 
@@ -112,11 +103,11 @@ module Greyhoundbet
         end
       end
 
-      puts 'NextRace data sync completed successfully.'
+      puts "NextRace data sync completed successfully. #{Time.zone.now}"
       true
     rescue StandardError => e
-      puts "Error during sync NextRace data: #{e.message}"
-      false
+      puts "Error during sync NextRace data: #{e.message} - date: #{Time.zone.now}"
+      nil
     end
   end
 end
