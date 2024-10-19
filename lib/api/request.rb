@@ -25,6 +25,11 @@ module Api
         raise NoContent unless items
 
         items
+      when :dog
+        forms = response&.dig(:details, :forms)
+        raise NoContent unless forms
+
+        forms
       when :card
         raise NoContent unless response
 
