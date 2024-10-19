@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require 'sinatra/activerecord'
 require 'dotenv/load'
+require 'sinatra/activerecord'
+
+ROOT_PATH = File.expand_path('..', __dir__)
 
 # require "./app/controllers/galgo_controller"
 
