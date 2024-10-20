@@ -23,4 +23,7 @@ Once the server is running, you can access the application in your web browser a
 
 ```ruby
 http://localhost:4567
+http://localhost:4567/health
+http://localhost:4567/dogs'
+http://localhost:4567/next_racings
 ```
