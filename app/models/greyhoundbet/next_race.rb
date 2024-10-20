@@ -103,10 +103,10 @@ module Greyhoundbet
         end
       end
 
-      puts "NextRace data sync completed successfully. #{Time.zone.now}"
+      puts "NextRace data sync completed successfully. #{Time.zone.now} - #{Time.zone.name}"
       true
     rescue StandardError => e
-      puts "Error during sync NextRace data: #{e.message} - date: #{Time.zone.now}"
+      puts "Error during sync NextRace data: #{e.message} - date: #{Time.zone.now} - #{Time.zone.name}"
       nil
     end
   end
