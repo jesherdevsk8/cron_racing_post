@@ -44,7 +44,7 @@ module Greyhoundbet
 
         response.data&.each do |data|
           city = City.find_by(city_id_by_site: data[:trackId].to_i)
-          city&.update_column(:short_name, data[:trackShortName])
+          city&.update(short_name: data[:trackShortName]) if city&.short_name != data[:trackShortName]
 
           next unless city
 
@@ -94,10 +94,10 @@ module Greyhoundbet
         end
       end
 
-      puts "LastRace data sync completed successfully. #{Time.zone.now}"
+      puts "LastRace data sync completed successfully. #{Time.zone.now} - #{Time.zone.name}"
       true
     rescue StandardError => e
-      puts "Error during sync LastRace data: #{e.message} - date: #{Time.zone.now}"
+      puts "Error during sync LastRace data: #{e.message} - date: #{Time.zone.now} - #{Time.zone.name}"
       nil
     end
   end
