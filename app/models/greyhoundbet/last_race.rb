@@ -32,6 +32,7 @@ module Greyhoundbet
     def sync_data
       puts "Syncing LastRace data from #{path}..."
 
+      Time.zone = 'America/Sao_Paulo'
       racing_dogs = NextRacingDog.joins(:next_racing, :dog)
       all_remarks = Remark.pluck(:id, :initials).to_h
 
