@@ -16,6 +16,8 @@ require './app/models/next_racings_dogs'
 require './app/models/greyhoundbet/exceptions'
 require './lib/api/request'
 
+Time.zone = 'America/Sao_Paulo'
+
 module Greyhoundbet
   class LastRace
     attr_reader :data
@@ -32,7 +34,6 @@ module Greyhoundbet
     def sync_data
       puts "Syncing LastRace data from #{path}..."
 
-      Time.zone = 'America/Sao_Paulo'
       racing_dogs = NextRacingDog.joins(:next_racing, :dog)
       all_remarks = Remark.pluck(:id, :initials).to_h
 

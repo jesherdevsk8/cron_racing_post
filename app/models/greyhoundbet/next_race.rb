@@ -13,6 +13,8 @@ require './app/models/sites'
 require './app/models/greyhoundbet/exceptions'
 require './lib/api/request'
 
+Time.zone = 'London'
+
 module Greyhoundbet
   class NextRace
     attr_reader :data
@@ -40,7 +42,6 @@ module Greyhoundbet
       site = Site.find_or_create_by(site: Site::NAMES[:greyhoundbet],
         by_name: Site::NAMES[:greyhoundbet])
 
-      Time.zone = 'America/Sao_Paulo'
       date = Time.zone.now.to_date.to_s
 
       url = "#{path}/meeting/blocks.sd?view=meetings&r_date=#{date}&blocks=header%2Clist"
