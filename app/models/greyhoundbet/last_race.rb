@@ -16,6 +16,8 @@ require './app/models/next_racings_dogs'
 require './app/models/greyhoundbet/exceptions'
 require './lib/api/request'
 
+Time.zone = 'America/Sao_Paulo'
+
 module Greyhoundbet
   class LastRace
     attr_reader :data
