@@ -7,6 +7,8 @@ require 'dotenv/load'
 
 Time.zone = 'America/Sao_Paulo'
 
+set :bind, '0.0.0.0'
+
 ROOT_PATH = File.expand_path(__dir__)
 
 # Require all controller files
