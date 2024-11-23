@@ -102,6 +102,9 @@ module Greyhoundbet
             NextRacingDog.create!(dog)
           end
         end
+      rescue ActiveRecord::RecordNotUnique => e
+        puts "Record with unique key already exists: #{e.message} - date: #{Time.zone.now} - #{Time.zone.name}"
+        next
       end
 
       puts "NextRace data sync completed successfully. #{Time.zone.now} - #{Time.zone.name}"
