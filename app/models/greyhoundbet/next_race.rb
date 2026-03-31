@@ -11,15 +11,16 @@ require './app/models/statistics_by_dogs'
 require './app/models/sites'
 
 require './app/models/greyhoundbet/exceptions'
+require './lib/greyhoundbet'
 require './lib/api/request'
 
-Time.zone = 'London'
+Time.zone = 'America/Sao_Paulo'
 
 module Greyhoundbet
   class NextRace
     attr_reader :data
 
-    def initialize(path: 'https://greyhoundbet.racingpost.com')
+    def initialize(path: Greyhoundbet::BASE_URL)
       raise ArgumentError, 'Data source cannot be nil or empty' if path.nil? || path.empty?
 
       @path = path
@@ -29,6 +30,7 @@ module Greyhoundbet
     attr_accessor :path
 
     def sync_data
+      sync_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       puts "Syncing NextRace data from #{path}..."
 
       racings = []
@@ -107,7 +109,9 @@ module Greyhoundbet
         next
       end
 
-      puts "NextRace data sync completed successfully. #{Time.zone.now} - #{Time.zone.name}"
+      elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - sync_started
+      puts "NextRace data sync completed successfully in #{format('%.2f',
+        elapsed)}s. #{Time.zone.now} - #{Time.zone.name}"
       true
     rescue StandardError => e
       puts "Error during sync NextRace data: #{e.message} - date: #{Time.zone.now} - #{Time.zone.name}"

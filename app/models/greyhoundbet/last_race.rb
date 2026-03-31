@@ -2,6 +2,8 @@
 
 # Greyhoundbet::LastRace.new
 
+require 'digest'
+
 require './app/models/cities'
 require './app/models/dogs'
 require './app/models/remarks'
@@ -14,6 +16,7 @@ require './app/models/next_racings'
 require './app/models/next_racings_dogs'
 
 require './app/models/greyhoundbet/exceptions'
+require './lib/greyhoundbet'
 require './lib/api/request'
 
 Time.zone = 'America/Sao_Paulo'
@@ -22,7 +25,7 @@ module Greyhoundbet
   class LastRace
     attr_reader :data
 
-    def initialize(path: 'https://greyhoundbet.racingpost.com')
+    def initialize(path: Greyhoundbet::BASE_URL)
       raise ArgumentError, 'Data source cannot be nil or empty' if path.nil? || path.empty?
 
       @path = path
@@ -32,6 +35,7 @@ module Greyhoundbet
     attr_accessor :path
 
     def sync_data
+      sync_started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       puts "Syncing LastRace data from #{path}..."
 
       racing_dogs = NextRacingDog.joins(:next_racing, :dog)
@@ -52,8 +56,16 @@ module Greyhoundbet
 
           grade = data[:trialFlag] == 'NT' ? data[:rGradeCde] : data[:trialFlag]
 
-          last_race = LastRacing.find_or_create_by(race_id_by_site: data[:rInstId].to_i, race_date: data[:raceTime],
-            city_id: city.id, distance: data[:distMetre], raceGrade: grade, odd_Back: 0)
+          race_id_site = race_id_by_site_for(data, city)
+
+          last_race = LastRacing.find_or_initialize_by(race_id_by_site: race_id_site, city_id: city.id)
+          last_race.assign_attributes(
+            race_date: data[:raceTime],
+            distance: data[:distMetre],
+            raceGrade: grade,
+            odd_Back: 0
+          )
+          last_race.save!
 
           bends = data[:bndPos].gsub(/\D/, '').chars
           fn = data[:rOutcomeId].gsub(/\D/, '')
@@ -70,7 +82,7 @@ module Greyhoundbet
             position_bend_3: bends[2].to_i.zero? ? nil : bends[2].to_i,
             position_bend_4: bends[3].to_i.zero? ? nil : bends[3].to_i)
 
-          puts('## ' * 10, { last_racings_dogs_id: last_race_dog.id })
+          puts "[LastRacingDog] last_racings_dogs_id=#{last_race_dog.id}"
 
           data[:remarks]&.split(',')&.each do |remark|
             remarkdb = Remark.find_or_create_by(initials: all_remarks[remark], remark:)
@@ -96,11 +108,31 @@ module Greyhoundbet
         end
       end
 
-      puts "LastRace data sync completed successfully. #{Time.zone.now} - #{Time.zone.name}"
+      elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - sync_started
+      puts "LastRace data sync completed successfully in #{format('%.2f',
+        elapsed)}s. #{Time.zone.now} - #{Time.zone.name}"
       true
     rescue StandardError => e
       puts "Error during sync LastRace data: #{e.message} - date: #{Time.zone.now} - #{Time.zone.name}"
       nil
+    end
+
+    private
+
+    def race_id_by_site_for(data, city)
+      raw = data[:rInstId].to_s.strip
+      n = raw.to_i
+      return n if n.positive?
+
+      key = [
+        city.id,
+        data[:raceTime].to_s,
+        data[:distMetre].to_s,
+        data[:trialFlag].to_s,
+        data[:rGradeCde].to_s,
+        data[:rFormDatetime].to_s
+      ].join('|')
+      Digest::SHA256.hexdigest(key)[0, 14].to_i(16)
     end
   end
 end

@@ -24,6 +24,10 @@ Once the server is running, you can access the application in your web browser a
 ```ruby
 http://localhost:4567
 http://localhost:4567/health
-http://localhost:4567/dogs'
+http://localhost:4567/dogs
+http://localhost:4567/dogs?page=2
 http://localhost:4567/next_racings
+http://localhost:4567/next_racings?page=2
 ```
+
+Paginated lists return **30 items per page**; add `?page=N` (optional, default `1`).
